@@ -1,72 +1,67 @@
-Exercise JDBC and Logging
-=========================
-Resources
--------------
-The following resources are convenient (some are required) during the exercise:
+# Introductie
+Deze workshop is deel van de DEA Course aan de Hogeschool Arnhem/Nijmegen. 
+Onderwerp is het bekend raken met JDBC en de datasource-laag.
 
-* DEA Slides: Data Source Layer
-* Chapter 10 from Patterns of Enterprise Application Architecture (Fowler)
-* MySQL installed on your local machine (Windows download at https://dev.mysql.com/get/Downloads/MySQLInstaller/mysql-installer-web-community-5.6.26.0.msi) including a MySQL client like [MySQL workbench](https://dev.mysql.com/downloads/workbench/).
-* The [JDBC API Guide](http://docs.oracle.com/javase/7/docs/technotes/guides/jdbc/)
-* Jenkovs [JDBC Tutorial](http://tutorials.jenkov.com/jdbc/index.html)
-* Need more theoretic background? Visit one of these resources:
-	* http://staff.cs.upt.ro/~ioana/arhit/2015/DataAccessPattern.ppt
-	* http://blog.fedecarg.com/2009/03/12/domain-driven-design-and-data-access-strategies/
-	* http://martinfowler.com/eaaCatalog/
-* Need more practical background and do you have a PluralSight account? As a HAN-OOSE student you can apply for an account at [ICA Xtend](https://ica-xtend.nl/winkel/):
-	* http://www.pluralsight.com/courses/mastering-java-swing-part2 (Querying Databases using JDBC etc.)
-	* http://www.pluralsight.com/courses/mastering-java-swing-part2 (Bridge Pattern)
+# Oefening
 
-In this exercise you'll learn:
-------------------------------
-* how to use property files and load property files from the classpath
-* how to use the JDBC API to connect to relational databases
-* how to add the MySQL JDBC driver to a Maven Project
-* how to execute simple SQL statements and process resultsets
-* how to implement the Data Access Object pattern using JDBC
-* how to apply proper handling of exceptions using Java Logger.
+In deze oefening zal een stand-alone Java applicatie worden gemaakt, die in staat is om
+een `Item` in een relationele database op te slaan, gebruikmakend van JDBC.
+We zullen hierbij uitgaan van een MySql database.
 
-Steps
------
-1. Open the Project (pom.xml) in your IDE. The next steps will assume you've used IntelliJ, but we'll guess it still works in any IDE that supports [Maven](http://maven.apache.org/ "Maven")
+**In deze oefening leer je:**
 
-2. Before we actually going to connect to the database start with creating a property file called <code>database.properties</code> and put the file in src/main/resources. Add properties and values for:
-	* driver, e.g. com.mysql.jdbc.Driver
-	* connectionstring, e.g. jdbc:mysql://localhost/items?user=YOUR_USERNAME_HERE&password=YOUR_PASSWORD
+* Hoe je een properties-bestand kunt gebruiken en deze kunt laden van het Class-path
+* Hoe je middels de JDBC-API een verbinding kunt leggen met een relationele database
+* Hoe je een JDBC driver moet toevoegen aan een Maven Project
+* Hoe je SQL kunt uitvoeren en de resultset kunt verwerken
+* Hoe je het *Data Access Object* pattern kunt implementeren net JDBC
 
-	Make sure this user exists and has enough [privileges](https://www.digitalocean.com/community/tutorials/how-to-create-a-new-user-and-grant-permissions-in-mysql "privileges") for the specific database
+## 1: Toevoegen Database properties-bestand
+Voeg een properties-bestand toe genaamd `database.properties` en plaats dit bestand in *src/main/resources*.
+Voeg properties en waarden toe voor
+* driver: bijvoorbeeld *com.mysql.jdbc.Driver*
+* connectionstring: bijvoorbeeld *jdbc:mysql://localhost/items?user=YOUR_USERNAME_HERE&password=YOUR_PASSWORD*
 
-3. Create a new class <code>DatabaseProperties</code> in a package <code>oose.dea.datasource.util</code>that loads the property file and exposes the four properties using get-methods. Create a new class <code>JdbcApp</code> with a main-method to test the <code>DatabaseProperties</code> class
+## 2: Laden van de properties
+Maak een nieuwe klasse `DatabaseProperties` in de package `nl.han.ica.oose.dea.datasource.util` die 
+het properties-bestand kan laden en de waarden via get-methodes beschikbaar maakt.
 
-4. Before we can use access database we:
-	* need a vendor specific (MySQL) database driver
-	* need to create a database
+## 3: Toevoegen van een main-methode
+Maak een nieuwe klasse `JdbcApp` met een `main`-methode en test daarmee de `DatabaseProperties` klasse.
 
-	Create an empty database and make sure the configured user has appropriate privileges.
+## 4: Aanmaken database
+Maak een lege database aan en zorg ervoor dat de geconfigueerde gebruiker de juiste rechten heeft.
 
-5. Add the database driver to the dependencies of your pom.xml:
+## 5: Toevoegen database-driver 
+Om via JDBC met de database te kunnen verbinden moet er een database-specifieke JDBC-driver worden geladen.
+Voordat deze beschikbaar is moet er eerst een dependency aan de `pom.xml` worden toegevoegd:
 
-  ```xml
+  ```
 	<dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
         <version>5.1.34</version>
    </dependency>
    ```
+## 6: Aanmaken Data Access Object
+Maak een nieuwe klasse genaamd `ItemDao` met een methode genaamd `findAll()` die een `List<Item>`
+teruggeeft. Plaats deze klasse in de package `nl.han.ica.oose.dea.datasource` en implementeer de `findAll`
+methode:
 
-6. Create a new class <code>ItemDao</code> with a method called <code>List<Item> findAll()</code>. Place the new class in the package <code>oose.dea.datasource</code>. Implement the findAll-method using the <code>DatabaseProperties</code> class.
+* Gebruik `Class.forName` om de database driver te laden
+* Gebruik `DriverManager.getConnection()` voor het maken van een `Connection`
+* Via de `Connection` kan een `Statement` gemaakt worden `connection.prepareStatement("SELECT * FROM items").executeQuery();`
+* Het uitvoeren van een `Statement` geeft een `ResultSet` terug
+* Je kunt door een `ResultSet` heenloopen door `next()` te gebruiken
 
-	TIPS:
-	* Use <code>Class.forName</code> on the databasedriver to load the driver
-	* <code>DriverManager.getConnection()</code> creates a Connection
-	* Connection are able to create Statements: <code>connection.prepareStatement("SELECT * FROM items").executeQuery();</code>
-	* Executing a query lead to a <code>ResultSet</code>
-	* You can loop through ResultSets using <code>next()</code>
+Gebruik de `main()` methode voor het aanroepen van de findAll() methode.
 
 	Call the <code>findAll()</code> method from your main-method and display the results.
 
-7. Until now, you might have caught exceptions like this:
-	```java
+## 7: Toevoegen Logging
+Tot nu toe heb je mogelijk excepties als volgt opgevangen:
+
+	```
 	  try
 	  {
 	      connection.prepareStatement("...").execute();
@@ -76,12 +71,14 @@ Steps
 	  }
 	 ```
 
-As you may know printing the stacktrace uses <code>System.out</code> which may be redirected. That's why code quality tools like [Sonar](http://www.sonarqube.org) advice developers to use a Logger instead.
+Zoals je mogelijk weet worden de stacktrace uitgeprint via `System.out`, die omgeleid kan worden.
+Daarom heeft het de voorkeur een Logger te gebruiken.
 
-	Create a (one) logger in your class and use <code>logger.log()</code> (or <code>logger.warning()</code>, <code>logger.severe()</code>, etc.) instead.
+Maak een Logger in je klasse en gebruik `Logger.log()` (of bijvoorbeeld `Logger.warning()`) voor het actief
+loggen van fouten
 
-8. Implement the rest of the DAO-methods (create, insert, update and delete) using PreparedStatements. You might need [Transactions](http://www.mkyong.com/jdbc/jdbc-transaction-example/) for the latter three.
+## 8: Afmaken DAO
+Implementeer de overige DAO-methodes (create, insert, update and delete) en maak daarbij gebruik van
+`PreparedStatements`. Mogelijk heb je hierbij [Transactions](http://www.mkyong.com/jdbc/jdbc-transaction-example/) 
+nodig.
 
-Done
-----
-You can checkout the branch exercise-results for a working project and review possible differences. In this branch you'll also find an example of how to unit test your ItemDao using H2 in memory database. 
