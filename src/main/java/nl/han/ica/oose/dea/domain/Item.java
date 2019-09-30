@@ -1,16 +1,24 @@
 package nl.han.ica.oose.dea.domain;
 
 public class Item {
+    public static final int UNKNOWN = -1;
+
+    private int id;
     private String sku;
     private String category;
     private String title;
 
     public Item(){}
 
-    public Item(String sku, String category, String title) {
+    public Item(int id, String sku, String category, String title) {
+        this.id = id;
         this.sku = sku;
         this.category = category;
         this.title = title;
+    }
+
+    public Item(String sku, String category, String title) {
+        this(UNKNOWN, sku, category, title);
     }
 
     public String getSku() {
@@ -43,6 +51,15 @@ public class Item {
                 "sku='" + sku + '\'' +
                 ", category='" + category + '\'' +
                 ", title='" + title + '\'' +
+                ", id=" + id +
                 '}';
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

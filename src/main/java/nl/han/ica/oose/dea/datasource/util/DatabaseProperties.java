@@ -18,14 +18,10 @@ public class DatabaseProperties {
         }
     }
 
-    public String driver()
-    {
-        return properties.getProperty("driver");
-    }
 
     public String connectionString()
     {
-        return properties.getProperty("connectionString");
+        return properties.getProperty("databaseurl") + "?user=" + properties.getProperty("user") + "&password=" + properties.getProperty("password") + "&serverTimezone=UTC";
     }
 
 }
