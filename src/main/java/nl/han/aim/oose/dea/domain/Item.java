@@ -1,4 +1,4 @@
-package nl.han.ica.oose.dea.domain;
+package nl.han.aim.oose.dea.domain;
 
 public class Item {
     public static final int UNKNOWN = -1;

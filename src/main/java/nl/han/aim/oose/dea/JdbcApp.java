@@ -1,8 +1,8 @@
-package nl.han.ica.oose.dea;
+package nl.han.aim.oose.dea;
 
-import nl.han.ica.oose.dea.datasource.ItemDao;
-import nl.han.ica.oose.dea.datasource.util.DatabaseProperties;
-import nl.han.ica.oose.dea.domain.Item;
+import nl.han.aim.oose.dea.datasource.ItemDao;
+import nl.han.aim.oose.dea.datasource.util.DatabaseProperties;
+import nl.han.aim.oose.dea.domain.Item;
 
 import java.io.IOException;
 import java.util.List;

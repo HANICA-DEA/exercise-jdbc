@@ -1,7 +1,7 @@
-package nl.han.ica.oose.dea.datasource;
+package nl.han.aim.oose.dea.datasource;
 
-import nl.han.ica.oose.dea.datasource.util.DatabaseProperties;
-import nl.han.ica.oose.dea.datasource.util.ScriptRunner;
+import nl.han.aim.oose.dea.datasource.util.DatabaseProperties;
+import nl.han.aim.oose.dea.datasource.util.ScriptRunner;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

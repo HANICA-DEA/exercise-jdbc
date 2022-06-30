@@ -1,4 +1,4 @@
-package nl.han.ica.oose.dea.datasource.util;
+package nl.han.aim.oose.dea.datasource.util;
 
 /*
  * Slightly modified version of the com.ibatis.common.jdbc.ScriptRunner class

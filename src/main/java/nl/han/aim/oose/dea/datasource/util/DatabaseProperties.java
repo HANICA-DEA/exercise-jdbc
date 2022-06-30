@@ -1,4 +1,4 @@
-package nl.han.ica.oose.dea.datasource.util;
+package nl.han.aim.oose.dea.datasource.util;
 
 import java.io.IOException;
 import java.util.Properties;
@@ -21,7 +21,7 @@ public class DatabaseProperties {
 
     public String connectionString()
     {
-        return properties.getProperty("databaseurl") + "?user=" + properties.getProperty("user") + "&password=" + properties.getProperty("password") + "&serverTimezone=UTC";
+        return properties.getProperty("connectionString");
     }
 
 }

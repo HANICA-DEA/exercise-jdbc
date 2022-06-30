@@ -40,7 +40,7 @@ Voordat deze beschikbaar is moet er eerst een dependency aan de `pom.xml` worden
 	<dependency>
         <groupId>mysql</groupId>
         <artifactId>mysql-connector-java</artifactId>
-        <version>5.1.34</version>
+        <version>8.0.29</version>
    </dependency>
    ```
 ## 6: Aanmaken Data Access Object
