@@ -13,7 +13,7 @@ public class JdbcApp {
     public static void main(String[] args) {
         System.out.println("Hello JDBC");
 
-        var useSqlServer = false;
+        var useSqlServer = true;
         DatabaseProperties dbProperties;
         if (useSqlServer) {
             dbProperties = new SqlServerDatabaseProperties();
