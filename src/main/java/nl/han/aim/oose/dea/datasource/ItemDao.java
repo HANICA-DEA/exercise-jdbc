@@ -5,7 +5,7 @@ import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.mysql.cj.jdbc.JdbcConnection;
+import nl.han.aim.oose.dea.datasource.exceptions.DuplicateItemException;
 import nl.han.aim.oose.dea.datasource.exceptions.ItemNotFoundException;
 import nl.han.aim.oose.dea.datasource.util.DatabaseProperties;
 import nl.han.aim.oose.dea.domain.Item;
@@ -81,11 +81,11 @@ public class ItemDao {
             st.setString(1, item.getSku());
             st.setString(2, item.getCategory());
             st.setString(3, item.getTitle());
-            var result = st.executeUpdate();
+            st.executeUpdate();
             connection.commit();
         } catch (SQLException e) {
             logger.warning("Error bij aanmaken item " + item.toString() + ": " + e.getMessage());
-            throw new RuntimeException(e);
+            throw new DuplicateItemException("An item met sku '" + item.getSku() + "' bestaat al.", e);
         }
         return item;
     }
@@ -103,11 +103,15 @@ public class ItemDao {
             st.setString(1, item.getCategory());
             st.setString(2, item.getTitle());
             st.setString(3, item.getSku());
-            st.executeUpdate();
+            var result = st.executeUpdate();
+            if (result!=1) {
+                throw new ItemUpdateException("Geen item met sku '" + item.getSku() + "' om te updaten.");
+            }
             connection.commit();
-        } catch (SQLException e) {
-            logger.warning("Error bij updaten item met sku " + item.getSku() + ": " + e.getMessage());
-            throw new RuntimeException(e);
+        } catch (SQLException exc) {
+            var errorMessage = "Error bij updaten item met sku '" + item.getSku() + "'";
+            logger.warning( errorMessage);
+            throw new ItemUpdateException(errorMessage, exc);
         }
     }
 
