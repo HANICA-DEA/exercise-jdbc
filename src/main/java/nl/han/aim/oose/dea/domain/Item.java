@@ -45,4 +45,16 @@ public class Item {
                 ", title='" + title + '\'' +
                 '}';
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Item oAsItem = (Item) o;
+        if (o==null) {
+            return false;
+        }
+        return oAsItem.getSku().equals(getSku())
+                && oAsItem.getCategory().equals(getCategory())
+                && oAsItem.getTitle().equals(getTitle());
+    }
+
 }

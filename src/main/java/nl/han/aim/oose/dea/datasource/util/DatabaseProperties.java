@@ -6,6 +6,10 @@ import java.util.Properties;
 public abstract class DatabaseProperties {
     private final static String CONNECTIONSTRING = "connectionstring";
     private final static String DRIVER = "driver";
+    private final static String USER = "user";
+    private final static String PASSWORD = "password";
+
+
     protected Properties properties;
 
     public String getConnectionString() {
@@ -31,4 +35,11 @@ public abstract class DatabaseProperties {
         }
     }
 
+    public String getUser() {
+        return properties.getProperty(USER);
+    }
+
+    public String getPassword() {
+        return properties.getProperty(PASSWORD);
+    }
 }
