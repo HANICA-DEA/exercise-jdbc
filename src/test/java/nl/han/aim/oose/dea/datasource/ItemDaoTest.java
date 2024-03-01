@@ -13,7 +13,7 @@ import nl.han.aim.oose.dea.datasource.util.DbProperties;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
 
-import nl.han.aim.oose.dea.domain.ItemDTO;
+import nl.han.aim.oose.dea.business.ItemDTO;
 import nl.han.aim.oose.dea.datasource.exceptions.ItemNotFoundException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -72,7 +72,7 @@ class ItemDaoTest {
         // Arrange.
         var expected = testItems;
 
-        // Act
+        // Act.
         var actual = sut.findAll();
 
         // Assert.

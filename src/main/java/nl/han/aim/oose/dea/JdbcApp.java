@@ -4,7 +4,7 @@ import nl.han.aim.oose.dea.datasource.ItemDao;
 import nl.han.aim.oose.dea.datasource.util.DbProperties;
 import nl.han.aim.oose.dea.datasource.util.MySqlDbProperties;
 import nl.han.aim.oose.dea.datasource.util.SqlServerDbProperties;
-import nl.han.aim.oose.dea.domain.ItemDTO;
+import nl.han.aim.oose.dea.business.ItemDTO;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;

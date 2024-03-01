@@ -1,4 +1,4 @@
-package nl.han.aim.oose.dea.domain;
+package nl.han.aim.oose.dea.business;
 
 public class ItemDTO {
     private String sku;
@@ -26,6 +26,7 @@ public class ItemDTO {
     }
 
     public void setCategory(String category) {
+        // Check of de categorie bestaat.
         this.category = category;
     }
 
@@ -47,14 +48,14 @@ public class ItemDTO {
     }
 
     @Override
-    public boolean equals(Object o) {
-        ItemDTO oAsItem = (ItemDTO) o;
-        if (o==null) {
+    public boolean equals(Object itemDTOToCompare) {
+        ItemDTO item = (ItemDTO) itemDTOToCompare;
+        if (itemDTOToCompare==null) {
             return false;
         }
-        return oAsItem.getSku().equals(getSku())
-                && oAsItem.getCategory().equals(getCategory())
-                && oAsItem.getTitle().equals(getTitle());
+        return item.getSku().equals(getSku())
+                && item.getCategory().equals(getCategory())
+                && item.getTitle().equals(getTitle());
     }
 
 }

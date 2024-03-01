@@ -1,9 +1,9 @@
 package nl.han.aim.oose.dea.datasource;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+//import java.sql.Connection;
+//import java.sql.DriverManager;
+//import java.sql.ResultSet;
+import java.sql.*;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -12,7 +12,7 @@ import nl.han.aim.oose.dea.datasource.exceptions.DuplicateItemException;
 import nl.han.aim.oose.dea.datasource.exceptions.ItemNotFoundException;
 import nl.han.aim.oose.dea.datasource.exceptions.ItemUpdateException;
 import nl.han.aim.oose.dea.datasource.util.DbProperties;
-import nl.han.aim.oose.dea.domain.ItemDTO;
+import nl.han.aim.oose.dea.business.ItemDTO;
 
 public class ItemDao {
 
