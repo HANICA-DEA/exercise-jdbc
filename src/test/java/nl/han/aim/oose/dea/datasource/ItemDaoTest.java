@@ -8,11 +8,12 @@ import java.util.*;
 import java.util.logging.Logger;
 
 import nl.han.aim.oose.dea.datasource.exceptions.DuplicateItemException;
-import nl.han.aim.oose.dea.datasource.util.DatabaseProperties;
+import nl.han.aim.oose.dea.datasource.exceptions.ItemUpdateException;
+import nl.han.aim.oose.dea.datasource.util.DbProperties;
 import org.h2.tools.RunScript;
 import org.junit.jupiter.api.*;
 
-import nl.han.aim.oose.dea.domain.Item;
+import nl.han.aim.oose.dea.domain.ItemDTO;
 import nl.han.aim.oose.dea.datasource.exceptions.ItemNotFoundException;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -20,9 +21,9 @@ class ItemDaoTest {
 
     private ItemDao sut;
 
-    private List<Item> testItems;
+    private List<ItemDTO> testItems;
 
-    private DatabaseProperties dbProperties;
+    private DbProperties dbProperties;
 
     private Logger logger;
 
@@ -34,7 +35,7 @@ class ItemDaoTest {
         logger = Logger.getLogger(getClass().getName());
 
         logger.info("Initialiseren test dataset.");
-        dbProperties = new H2DatabaseProperties();
+        dbProperties = new H2DbProperties();
 
         var connectionString = dbProperties.getConnectionString();
         var dbUser = dbProperties.getUser();
@@ -53,10 +54,10 @@ class ItemDaoTest {
         }
         sut = new ItemDao(dbProperties, logger);
 
-        testItems = new ArrayList<Item>(3);
-        testItems.add(new Item("test sku1", "test category 1", "test title 1"));
-        testItems.add(new Item("test sku2", "test category 2", "test title 2"));
-        testItems.add(new Item("test sku3", "test category 3", "test title 3"));
+        testItems = new ArrayList<ItemDTO>(3);
+        testItems.add(new ItemDTO("test sku1", "test category 1", "test title 1"));
+        testItems.add(new ItemDTO("test sku2", "test category 2", "test title 2"));
+        testItems.add(new ItemDTO("test sku3", "test category 3", "test title 3"));
         sut.create(testItems.get(0));
         sut.create(testItems.get(1));
         sut.create(testItems.get(2));
@@ -84,7 +85,7 @@ class ItemDaoTest {
     @Test
     void create() {
         // Arrange.
-        var testItem4 = new Item("test sku 4", "test category 4", "test title 4");
+        var testItem4 = new ItemDTO("test sku 4", "test category 4", "test title 4");
 
         // Act
         var actual = sut.create(testItem4);
@@ -110,7 +111,7 @@ class ItemDaoTest {
     @Test
     void createItemWithoutSkuThrowsException() {
         // Arrange.
-        var invalidItem = new Item("", null, "test title 3");
+        var invalidItem = new ItemDTO("", null, "test title 3");
 
         // Act.
         Assertions.assertThrows(DuplicateItemException.class,
@@ -142,7 +143,7 @@ class ItemDaoTest {
         var itemToChange = testItems.get(1);
         itemToChange.setTitle("new title");
         itemToChange.setCategory("new category");
-        var expected = new Item(itemToChange.getSku(), itemToChange.getCategory(), itemToChange.getTitle());
+        var expected = new ItemDTO(itemToChange.getSku(), itemToChange.getCategory(), itemToChange.getTitle());
 
         // Act.
         sut.update(itemToChange);
@@ -155,7 +156,7 @@ class ItemDaoTest {
     @Test
     void updateNonExistingItemThrowsException() {
         // Arrange.
-        var itemToChange = new Item("new sku", "new category", "new title");
+        var itemToChange = new ItemDTO("new sku", "new category", "new title");
 
         // Act + Assert.
         Assertions.assertThrows(ItemUpdateException.class,
@@ -165,7 +166,8 @@ class ItemDaoTest {
     @Test
     void updateWithEmptyCategoryThrowsException() {
         // Arrange.
-        var itemToChange = new Item(null, null, "new title");
+        var sku = testItems.get(0).getSku();
+        var itemToChange = new ItemDTO(sku, null, "new title");
 
         // Act + Assert.
         Assertions.assertThrows(ItemUpdateException.class,
@@ -174,7 +176,7 @@ class ItemDaoTest {
     @Test
     void updateWithEmptySkuThrowsException() {
         // Arrange.
-        var itemToChange = new Item(null, "category", "new title");
+        var itemToChange = new ItemDTO(null, "category", "new title");
 
         // Act + Assert.
         Assertions.assertThrows(ItemUpdateException.class,

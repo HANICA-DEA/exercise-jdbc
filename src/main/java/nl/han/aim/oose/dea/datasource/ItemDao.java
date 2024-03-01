@@ -1,22 +1,26 @@
 package nl.han.aim.oose.dea.datasource;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import nl.han.aim.oose.dea.datasource.exceptions.DuplicateItemException;
 import nl.han.aim.oose.dea.datasource.exceptions.ItemNotFoundException;
-import nl.han.aim.oose.dea.datasource.util.DatabaseProperties;
-import nl.han.aim.oose.dea.domain.Item;
+import nl.han.aim.oose.dea.datasource.exceptions.ItemUpdateException;
+import nl.han.aim.oose.dea.datasource.util.DbProperties;
+import nl.han.aim.oose.dea.domain.ItemDTO;
 
 public class ItemDao {
 
-    private DatabaseProperties dbProperties;
+    private DbProperties dbProperties;
 
     private Logger logger;
 
-    public ItemDao(DatabaseProperties dbProperties, Logger logger) {
+    public ItemDao(DbProperties dbProperties, Logger logger) {
         this.dbProperties = dbProperties;
         this.logger = logger;
     }
@@ -26,12 +30,12 @@ public class ItemDao {
     private Connection getConnection() throws SQLException {
         if (dbConnection ==null) {
             dbConnection = DriverManager.getConnection(dbProperties.getConnectionString(), dbProperties.getUser(), dbProperties.getPassword());
-            dbConnection.setAutoCommit(false);
+            // dbConnection.setAutoCommit(false);
         }
         return dbConnection;
     }
-    public List<Item> findAll() {
-        var resultItems = new ArrayList<Item>();
+    public List<ItemDTO> findAll() {
+        var resultItems = new ArrayList<ItemDTO>();
         try {
             ResultSet rsItems = null;
             var st = getConnection().prepareStatement("SELECT * FROM Items;");
@@ -40,7 +44,7 @@ public class ItemDao {
                 String sku = rsItems.getString("sku");
                 String category = rsItems.getString("category");
                 String title = rsItems.getString("title");
-                resultItems.add(new Item(sku, category, title));
+                resultItems.add(new ItemDTO(sku, category, title));
             }
         } catch (SQLException e) {
             logger.log(Level.INFO, "Database error: " + e);
@@ -49,9 +53,9 @@ public class ItemDao {
         return resultItems;
     }
 
-    public Item readItem(String sku) throws ItemNotFoundException {
+    public ItemDTO readItem(String sku) {
         // Lezen item uit database.
-        Item resultItem = null;
+        ItemDTO resultItem = null;
         try {
             var st = getConnection().prepareStatement("select * from Items where sku = ?");
             st.setString(1, sku);
@@ -60,7 +64,7 @@ public class ItemDao {
             if (!result.next()) {
                 throw new ItemNotFoundException("Item met sku '" + sku + "' niet gevonden in.");
             }
-            resultItem = new Item(
+            resultItem = new ItemDTO(
                     result.getString("sku"),
                     result.getString("category"),
                     result.getString("title"));
@@ -74,7 +78,7 @@ public class ItemDao {
     /**
      * Toevoegen item in database.
      */
-    public Item create(Item item) {
+    public ItemDTO create(ItemDTO item) {
         try {
             var connection = getConnection();
             var st = getConnection().prepareStatement("insert into Items values(?, ?, ?);");
@@ -82,7 +86,7 @@ public class ItemDao {
             st.setString(2, item.getCategory());
             st.setString(3, item.getTitle());
             st.executeUpdate();
-            connection.commit();
+            //connection.commit();
         } catch (SQLException e) {
             logger.warning("Error bij aanmaken item " + item.toString() + ": " + e.getMessage());
             throw new DuplicateItemException("An item met sku '" + item.getSku() + "' bestaat al.", e);
@@ -93,10 +97,9 @@ public class ItemDao {
     /**
      * De opgave noemt 'insert', maar dat komt overeen met create,
      * dus ik neem aan dat de opgave de missende 'Read' uit CRUD bedoelt.
-     * @param sku
      * @return
      */
-    public void update(Item item) {
+    public void update(ItemDTO item) {
         try {
             var connection = getConnection();
             var st = connection.prepareStatement("update Items set category=?, title=? where sku=?;");
@@ -107,7 +110,7 @@ public class ItemDao {
             if (result!=1) {
                 throw new ItemUpdateException("Geen item met sku '" + item.getSku() + "' om te updaten.");
             }
-            connection.commit();
+            // connection.commit();
         } catch (SQLException exc) {
             var errorMessage = "Error bij updaten item met sku '" + item.getSku() + "'";
             logger.warning( errorMessage);
@@ -121,7 +124,7 @@ public class ItemDao {
             var st = connection.prepareStatement("delete from Items where sku=?;");
             st.setString(1, sku);
             st.executeUpdate();
-            connection.commit();
+            // connection.commit();
         } catch (SQLException e) {
             logger.warning("Error bij updaten item met sku " + sku + ": " + e.getMessage());
             throw new RuntimeException(e);

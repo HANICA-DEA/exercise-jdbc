@@ -1,13 +1,13 @@
 package nl.han.aim.oose.dea.domain;
 
-public class Item {
+public class ItemDTO {
     private String sku;
     private String category;
     private String title;
 
-    public Item(){}
+    public ItemDTO(){}
 
-    public Item(String sku, String category, String title) {
+    public ItemDTO(String sku, String category, String title) {
         this.sku = sku;
         this.category = category;
         this.title = title;
@@ -48,7 +48,7 @@ public class Item {
 
     @Override
     public boolean equals(Object o) {
-        Item oAsItem = (Item) o;
+        ItemDTO oAsItem = (ItemDTO) o;
         if (o==null) {
             return false;
         }

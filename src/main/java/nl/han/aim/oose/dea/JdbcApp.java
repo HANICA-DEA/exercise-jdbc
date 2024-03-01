@@ -1,10 +1,10 @@
-import com.mysql.cj.jdbc.JdbcConnection;
+package nl.han.aim.oose.dea;
+
 import nl.han.aim.oose.dea.datasource.ItemDao;
-import nl.han.aim.oose.dea.datasource.exceptions.ItemNotFoundException;
-import nl.han.aim.oose.dea.datasource.util.DatabaseProperties;
-import nl.han.aim.oose.dea.datasource.util.MySqlDatabaseProperties;
-import nl.han.aim.oose.dea.datasource.util.SqlServerDatabaseProperties;
-import nl.han.aim.oose.dea.domain.Item;
+import nl.han.aim.oose.dea.datasource.util.DbProperties;
+import nl.han.aim.oose.dea.datasource.util.MySqlDbProperties;
+import nl.han.aim.oose.dea.datasource.util.SqlServerDbProperties;
+import nl.han.aim.oose.dea.domain.ItemDTO;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -14,11 +14,11 @@ public class JdbcApp {
         System.out.println("Hello JDBC");
 
         var useSqlServer = true;
-        DatabaseProperties dbProperties;
+        DbProperties dbProperties;
         if (useSqlServer) {
-            dbProperties = new SqlServerDatabaseProperties();
+            dbProperties = new SqlServerDbProperties();
         } else {
-            dbProperties = new MySqlDatabaseProperties();
+            dbProperties = new MySqlDbProperties();
         }
         var app = new JdbcApp();
         app.log("Connection string: " + dbProperties.getConnectionString());
@@ -29,7 +29,7 @@ public class JdbcApp {
 
         // TODO: Magic number 'test sku'
         var testSku = "test sku";
-        var testItem = new Item(testSku, "test category", "test titel");
+        var testItem = new ItemDTO(testSku, "test category", "test titel");
         itemDao.create(testItem);
         var findTestSKUItem = itemDao.readItem(testSku);
 

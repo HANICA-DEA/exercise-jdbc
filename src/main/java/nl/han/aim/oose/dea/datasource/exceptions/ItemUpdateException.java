@@ -1,4 +1,4 @@
-package nl.han.aim.oose.dea.datasource;
+package nl.han.aim.oose.dea.datasource.exceptions;
 
 import java.sql.SQLException;
 

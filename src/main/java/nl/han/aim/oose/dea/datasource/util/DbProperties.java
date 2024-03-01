@@ -3,7 +3,7 @@ package nl.han.aim.oose.dea.datasource.util;
 import java.io.IOException;
 import java.util.Properties;
 
-public abstract class DatabaseProperties {
+public abstract class DbProperties {
     private final static String CONNECTIONSTRING = "connectionstring";
     private final static String DRIVER = "driver";
     private final static String USER = "user";
@@ -20,14 +20,16 @@ public abstract class DatabaseProperties {
         return properties.getProperty(DRIVER);
     }
 
-    public DatabaseProperties(String resourceFileName) {
+    public DbProperties(String propertiesFileName) {
         properties = new Properties();
-        System.out.println("Loading '" + resourceFileName + "'");
+        System.out.println("Loading '" + propertiesFileName + "'");
         try {
-            properties.load(getClass().getClassLoader().getResourceAsStream(resourceFileName));
+            properties.load(getClass().getClassLoader().getResourceAsStream(propertiesFileName));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        // Laad de in de `.properties` ingesteld database driver/klasse met onderstaand stukje magisch `Class.forName`
+        // code, zodat DAO-objecten de database connectie kunnen opvragen.
         try {
             Class.forName(properties.getProperty("driver"));
         } catch (ClassNotFoundException e) {

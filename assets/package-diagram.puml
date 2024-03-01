@@ -1,0 +1,47 @@
+@startuml
+package "main" {
+    class ItemDao {
+        +<<constructor>> ItemDao(Logger, DatabaseProperties)
+        +findAll()
+        +create()
+        +read()
+        +update()
+        +delete()
+    }
+
+    ItemDao -right-> DbProperties : connects to database using
+    class DbProperties {
+        +DatabaseProperties(String propertiesFileName)
+        +getConnection()
+        -getConnectionString()
+        -getDriver()
+        -getUser()
+        -getPassword()
+    }
+
+    class SqlServerDbProperties {
+        -<<constructor>> SqlServerProperties()
+    }
+
+    class MySqlDbProperties {
+        +<<constructor>> MySqlProperties()
+    }
+    class JdbcApp {
+      +__{static} main()__
+    }
+    JdbcApp --> ItemDao: manual testing
+    DbProperties <|-- SqlServerDbProperties : extends
+    DbProperties <|-- MySqlDbProperties : extends
+}
+
+package "test" {
+    class H2DbProperties {
+        +<<constructor>> H2DBProperties()
+    }
+    class ItemDaoTest {
+      11 unit tests of 4 CRUD methods
+    }
+    ItemDaoTest -> ItemDao: automated tests
+    main.DbProperties <|-- H2DbProperties : extends
+}
+@enduml

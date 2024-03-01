@@ -5,15 +5,54 @@ Onderwerp is het bekend raken met JDBC en de datasource-laag.
 
 ## Solution multi-database
 
+<img src="assets/JdbcApp-package-diagram.png" alt="code coverage" align="right" width="400">
+
 In deze Git branch `solution-sqlserver` is uitwerking voor meerdere databases: zowel MySql als Sql Server. Als 3e is er nog H2 in memory database voor unit tests van DAO laag - wat eigenlijk intergratie tests zijn want de database is dus niet gemockt'.
 
-In de `JdbcApp` met de `main` methode zit een boolean `useSqlServer`. Dit is geïmplementeerd met abstracte `DatabaseProperties` klasse met 3 specifiekere implementaties.
+In de `JdbcApp` met de `main` methode zit een boolean `useSqlServer`. Dit is geïmplementeerd met abstracte `DatabaseProperties` klasse met 3 specifiekere implementaties. Hieronder 
+
+```mermaid
+classDiagram
+    ItemDao --> DbProperties: connects to database using
+    DbProperties <|-- SqlServerDbProperties
+    DbProperties <|-- MySqlDbProperties
+    DbProperties <|-- H2DbProperties
+    class DbProperties {
+      +DatabaseProperties(String propertiesFileName)
+      +getConnection()
+      +getConnectionString()
+      +getDriver()
+      +getUser()
+      +getPassword()
+    }
+    class SqlServerDbProperties {
+      «constructor» -SqlServerProperties()
+    }
+    class MySqlDbProperties{
+      «constructor» +MySqlProperties()
+    }
+    class H2DbProperties {
+      «constructor» -SqlServerProperties()
+    }
+    class ItemDao {
+        «constructor» +ItemDao(Logger, DatabaseProperties)
+        +findAll()
+        +create()
+        +read()
+        +update()
+        +delete()
+    }
+ ```
 
 ### JUnit Tests en code Coverage
 
-<img src="code-coverage.png" alt="code coverage" align="right" width="300">
+<img src="assets/code-coverage.png" alt="code coverage" align="left" width="300">
 
-Er zijn JUnit tests. De Code Coverage is nagenoeg 100% (zie Screenshot). Alleen de `MySQL..` en `SQLServerDatabaseProperties` zijn niet te testen. De `main` methode testen hoort niet bij unit. En je zou de logger moeten mocken o.i.d., wat een beetje overkill is. Gezien de code in de main feitelijk ook al een soort (handmatige) test is.
+*Figuur 1*: Code coverage statistieken feb 2024.
+
+Er zijn 11 JUnit tests, allen voor de 'hoofdklasse' `ItemDAO`. De *code coverage* is richting de 100% (zie figuur 1). De (bij BP verplichte) 80% overall line coverage haalt de test suite, met name omdat er in deze kleine code base relatief veel code staat in de de `main` methode in `JdbcApp`. 
+
+Alleen de `MySQL..` en `SQLServerDatabaseProperties` staan niet onder test. Deze static methode unit testen is lastig, dan zou je bv. `System.out.println` of diens abstractielaag `Logger` moeten mocken o.i.d., wat een beetje overkill is. Vooral gezien de code in de `main` feitelijk al een soort (handmatige) test is.
 
 ### Databases runnen in Docker
 
@@ -96,7 +135,7 @@ Gebruik de `main()` methode voor het aanroepen van de findAll() methode.
 
 Tot nu toe heb je mogelijk excepties als volgt opgevangen:
 
-```
+```java
 	  try
 	  {
 	      connection.prepareStatement("...").execute();
@@ -117,3 +156,7 @@ loggen van fouten
 Implementeer 4 CRUD methodes voor de `ItemDao` (create, read (vind single item), update and delete) en maak daarbij gebruik van
 `PreparedStatements`. Mogelijk heb je hierbij [Transactions](http://www.mkyong.com/jdbc/jdbc-transaction-example/) 
 nodig.
+
+## Bronnen
+
+Object Management Group. (2017). Unified Modeling Language (UML), Version 2.5.1. https://www.omg.org/spec/UML/2.5.1
