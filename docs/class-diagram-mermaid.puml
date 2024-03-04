@@ -1,0 +1,32 @@
+```mermaid
+classDiagram
+    ItemDao --> DbProperties: connects to database using
+    DbProperties <|-- SqlServerDbProperties
+    DbProperties <|-- MySqlDbProperties
+    DbProperties <|-- H2DbProperties
+    class DbProperties {
+      +DatabaseProperties(String propertiesFileName)
+      +getConnection()
+      +getConnectionString()
+      +getDriver()
+      +getUser()
+      +getPassword()
+    }
+    class SqlServerDbProperties {
+      «constructor» -SqlServerProperties()
+    }
+    class MySqlDbProperties{
+      «constructor» +MySqlProperties()
+    }
+    class H2DbProperties {
+      «constructor» -SqlServerProperties()
+    }
+    class ItemDao {
+        «constructor» +ItemDao(Logger, DatabaseProperties)
+        +findAll()
+        +create()
+        +read()
+        +update()
+        +delete()
+    }
+ ```

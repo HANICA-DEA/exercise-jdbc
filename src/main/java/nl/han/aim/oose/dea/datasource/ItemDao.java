@@ -14,13 +14,13 @@ import nl.han.aim.oose.dea.datasource.exceptions.ItemUpdateException;
 import nl.han.aim.oose.dea.datasource.util.DbProperties;
 import nl.han.aim.oose.dea.business.ItemDTO;
 
-public class ItemDao {
+public class ItemDao  extends SuperDAO {
 
     private DbProperties dbProperties;
 
     private Logger logger;
 
-    public ItemDao(DbProperties dbProperties, Logger logger) {
+    public ItemDao(DbProperties dbProperties, Logger logger)  {
         this.dbProperties = dbProperties;
         this.logger = logger;
     }

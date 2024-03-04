@@ -1,73 +1,10 @@
 # Introductie
 
-Deze workshop is deel van de DEA Course aan de Hogeschool Arnhem/Nijmegen. 
-Onderwerp is het bekend raken met JDBC en de datasource-laag.
+Deze workshop is deel van de DEA-xcourse aan de Hogeschool Arnhem/Nijmegen. Onderwerp is het bekend raken met JDBC en de datasource-laag.
 
-## Solution multi-database
+N.B. Deze `sqlserver-solution` branch bevat een voorbeeld uitwerking voor (ook!) gebruik SQL Server i.p.v. MySql (connection string) zoals de reguliere `solution` branch bevat. En daarnaast ook een [voorbeeld opleverdocument](docs/README.md) met verdere documentatie in de `docs/READMD.md`.
 
-<img src="assets/JdbcApp-package-diagram.png" alt="code coverage" align="right" width="400">
-
-In deze Git branch `solution-sqlserver` is uitwerking voor meerdere databases: zowel MySql als Sql Server. Als 3e is er nog H2 in memory database voor unit tests van DAO laag - wat eigenlijk intergratie tests zijn want de database is dus niet gemockt'.
-
-In de `JdbcApp` met de `main` methode zit een boolean `useSqlServer`. Dit is geïmplementeerd met abstracte `DatabaseProperties` klasse met 3 specifiekere implementaties. Hieronder 
-
-```mermaid
-classDiagram
-    ItemDao --> DbProperties: connects to database using
-    DbProperties <|-- SqlServerDbProperties
-    DbProperties <|-- MySqlDbProperties
-    DbProperties <|-- H2DbProperties
-    class DbProperties {
-      +DatabaseProperties(String propertiesFileName)
-      +getConnection()
-      +getConnectionString()
-      +getDriver()
-      +getUser()
-      +getPassword()
-    }
-    class SqlServerDbProperties {
-      «constructor» -SqlServerProperties()
-    }
-    class MySqlDbProperties{
-      «constructor» +MySqlProperties()
-    }
-    class H2DbProperties {
-      «constructor» -SqlServerProperties()
-    }
-    class ItemDao {
-        «constructor» +ItemDao(Logger, DatabaseProperties)
-        +findAll()
-        +create()
-        +read()
-        +update()
-        +delete()
-    }
- ```
-
-### JUnit Tests en code Coverage
-
-<img src="assets/code-coverage.png" alt="code coverage" align="left" width="300">
-
-*Figuur 1*: Code coverage statistieken feb 2024.
-
-Er zijn 11 JUnit tests, allen voor de 'hoofdklasse' `ItemDAO`. De *code coverage* is richting de 100% (zie figuur 1). De (bij BP verplichte) 80% overall line coverage haalt de test suite, met name omdat er in deze kleine code base relatief veel code staat in de de `main` methode in `JdbcApp`. 
-
-Alleen de `MySQL..` en `SQLServerDatabaseProperties` staan niet onder test. Deze static methode unit testen is lastig, dan zou je bv. `System.out.println` of diens abstractielaag `Logger` moeten mocken o.i.d., wat een beetje overkill is. Vooral gezien de code in de `main` feitelijk al een soort (handmatige) test is.
-
-### Databases runnen in Docker
-
-Runnen SQL Server op Mac M2
-
-```console
-Source: https://learn.microsoft.com/en-us/sql/linux/quickstart-install-connect-docker?view=sql-server-ver16&tabs=cli&pivots=cs1-bash
-docker run -e 'ACCEPT_EULA=Y' -e 'SA_PASSWORD=AJO1FEhsBxWL' -p 1433:1433 --name sqlserver --platform linux/amd64 -d mcr.microsoft.com/mssql/server:2019-latest
-```
-
-Runnen MySQL en adminer db admin webapp op poort 8080 kan door de `docker-compose.yml` te gebruiken:
-
-```console
-docker compose up
-```
+Tip: Overweeg zelf ook eens markdown te gebruiken i.p.v. Word, zodat je documentatie dicht bij je code zit en ook onder versiebeheer valt. En je bv, ook makkelijk (Java) code kunt syntax highlighten, aangezien je toch je code moet beschrijven. Dit geldt vooral als je doelgroep ook developers/ICT'ers zijn, maar je markdown exporteren als/converteren naar `.pdf` of Word is ook een mogelijkheid als je een bredere doelgroep hebt.
 
 ## Oefening
 
@@ -136,8 +73,7 @@ Gebruik de `main()` methode voor het aanroepen van de findAll() methode.
 Tot nu toe heb je mogelijk excepties als volgt opgevangen:
 
 ```java
-	  try
-	  {
+	  try {
 	      connection.prepareStatement("...").execute();
 	      connection.close();
 	  } catch (SQLException e) {
@@ -149,14 +85,10 @@ Zoals je mogelijk weet worden de stacktrace uitgeprint via `System.out`, die omg
 Daarom heeft het de voorkeur een Logger te gebruiken.
 
 Maak een Logger in je klasse en gebruik `Logger.log()` (of bijvoorbeeld `Logger.warning()`) voor het actief
-loggen van fouten
+loggen van fouten.
 
 ## 8: Afmaken DAO
 
 Implementeer 4 CRUD methodes voor de `ItemDao` (create, read (vind single item), update and delete) en maak daarbij gebruik van
 `PreparedStatements`. Mogelijk heb je hierbij [Transactions](http://www.mkyong.com/jdbc/jdbc-transaction-example/) 
 nodig.
-
-## Bronnen
-
-Object Management Group. (2017). Unified Modeling Language (UML), Version 2.5.1. https://www.omg.org/spec/UML/2.5.1
